@@ -110,6 +110,3 @@ rm %{buildroot}%{_docdir}/%{name}/*.html
 %files  utils
 %{_bindir}/nngcat
 %{_mandir}/man*/*.1*
-
-
-%changelog
