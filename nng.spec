@@ -2,7 +2,7 @@
 
 Name:		nng
 Version:	1.10.1
-Release:	1
+Release:	2
 Source0:	https://github.com/nanomsg/nng/archive/refs/tags/v%{version}/nng-%{version}.tar.gz
 Summary:	Nanomsg-Next-Generation light-weight brokerless messaging
 URL:		https://github.com/nng/nng
