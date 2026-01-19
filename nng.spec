@@ -1,18 +1,16 @@
-%global debug_package %{nil}
-
 Name:		nng
-Version:	1.10.1
-Release:	2
-Source0:	https://github.com/nanomsg/nng/archive/refs/tags/v%{version}/nng-%{version}.tar.gz
+Version:	1.11
+Release:	1
+Source0:	https://github.com/nanomsg/nng/archive/refs/tags/v%{version}/%{name}-%{version}.tar.gz
 Summary:	Nanomsg-Next-Generation light-weight brokerless messaging
-URL:		https://github.com/nng/nng
+URL:		https://github.com/nanomsg/nng
 License:	MIT
 Group:		System/Libraries
-BuildRequires:  cmake
-BuildRequires:  ninja
-BuildRequires:  lib64mbedtls-devel
-BuildRequires:  lib64nsl2
-BuildRequires:  asciidoctor
+BuildRequires:	cmake
+BuildRequires:	ninja
+BuildRequires:	pkgconfig(mbedtls)
+BuildRequires:	pkgconfig(libnsl)
+BuildRequires:	asciidoctor
 
 %description
 NNG provides a common messaging framework intended to solve common communication
@@ -45,21 +43,21 @@ NNG is implemented in pure C; if you need bindings for other languages
 please check the website.
 
 ############################
-%package    devel
-Summary:    Development files for the nng socket library
-Group:      Development/C
-Requires:   %{name} = %{version}-%{release}
+%package	devel
+Summary:	Development files for the nng socket library
+Group:		Development/C
+Requires:	%{name} = %{version}-%{release}
 
-%description    devel
+%description	devel
 This package contains the header files needed to develop applications using nng,
 a socket library that provides several communication patterns
 
 ############################
-%package    utils
-Summary:    Command line interface for communication with nng
-Requires:   %{name} = %{version}-%{release}
+%package	utils
+Summary:	Command line interface for communication with nng
+Requires:	%{name} = %{version}-%{release}
 
-%description    utils
+%description	utils
 Includes the nngcat utility which provides command line access to the
 Scalability Protocols, making it possible to write shell scripts that interact
 with other peers in a Scalability Protocols topology, by both sending and
@@ -71,18 +69,19 @@ receiving messages.
 
 ############################
 %build
-cmake   -G Ninja -DCMAKE_INSTALL_PREFIX="/usr" \
-        -DCMAKE_CXX_FLAGS="%optflags -fPIC" \
-        -DBUILD_SHARED_LIBS=ON \
-        -DNNG_ENABLE_TLS=ON \
-        -DNNG_ENABLE_NNGCAT=ON \
-        -DNNG_TESTS=ON \
-        -DNNG_ENABLE_DOC=ON
-ninja -C .
+%cmake	-G Ninja \
+	-DCMAKE_INSTALL_PREFIX="/usr" \
+	-DCMAKE_CXX_FLAGS="%optflags -fPIC" \
+	-DBUILD_SHARED_LIBS=ON \
+	-DNNG_ENABLE_TLS=ON \
+	-DNNG_ENABLE_NNGCAT=ON \
+	-DNNG_TESTS=ON \
+	-DNNG_ENABLE_DOC=ON
+%ninja_build
 
 ############################
 %install
-DESTDIR="%{buildroot}" ninja -C %{_builddir}/%{name}-%{version} install
+%ninja_install -C build
 
 # workaround for rpmlint non-versioned-file-in-library-package tomfoolery
 mkdir -p %{buildroot}%{_defaultlicensedir}/%{name}-%{version}/
@@ -98,7 +97,7 @@ rm %{buildroot}%{_docdir}/%{name}/*.html
 %{_libdir}/libnng.so.1*
 %{_defaultlicensedir}/%{name}-%{version}/LICENSE.txt
 
-%files  devel
+%files	devel
 %{_includedir}/%{name}/
 %{_libdir}/libnng.so
 %{_libdir}/cmake/%{name}/
@@ -107,6 +106,6 @@ rm %{buildroot}%{_docdir}/%{name}/*.html
 %{_mandir}/man*/*.7*
 %{_docdir}/%{name}/html/*.html
 
-%files  utils
+%files	utils
 %{_bindir}/nngcat
 %{_mandir}/man*/*.1*
